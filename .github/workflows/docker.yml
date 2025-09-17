@@ -1,0 +1,30 @@
+name: Build & Push Docker Image
+
+on:
+  push:
+    branches:
+      - main   # chạy khi push code lên branch main
+
+jobs:
+  docker-build-push:
+    runs-on: ubuntu-latest
+    steps:
+      # B1: Checkout source code
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      # B2: Login DockerHub bằng secrets
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # B3: Build & Push Docker image
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: hht2205/nodejs-app:latest
